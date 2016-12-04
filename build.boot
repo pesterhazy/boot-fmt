@@ -1,5 +1,36 @@
-(set-env! :source-paths #{"src"}
+(set-env! :resource-paths #{"src"}
           :dependencies '[[zprint "0.2.9"]
                           [org.clojure/tools.namespace "0.2.11"]])
 
 (require '[boot-fmt.core :refer [fmt]])
+
+(def +version+ "0.1")
+
+(task-options!
+ pom {:project 'boot-fmt/boot-fmt
+      :version +version+
+      :description "Boot task to auto-format Clojure(Script) code"
+      :url "https://github.com/pesterhazy/boot-fmt"
+      :scm {:url "https://github.com/pesterhazy/boot-fmt"}
+      :license {"Eclipse Public License"
+                "http://www.eclipse.org/legal/epl-v10.html"}})
+
+(set-env! :repositories [["clojars" (cond-> {:url "https://clojars.org/repo/"}
+                                      (System/getenv "CLOJARS_USER")
+                                      (merge {:username (System/getenv "CLOJARS_USER")
+                                              :password (System/getenv "CLOJARS_PASS")}))]])
+
+(deftask build []
+  (comp (pom)
+        (jar)
+        (install)))
+
+(deftask dev []
+  "Continuously build jar and install to local maven repository"
+  (comp (watch)
+        (build)))
+
+(deftask deploy []
+  (comp (build)
+        (push :repo "clojars"
+              :gpg-sign false #_(not (.endsWith +version+ "-SNAPSHOT")))))

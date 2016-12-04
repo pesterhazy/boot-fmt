@@ -1,11 +1,13 @@
 # boot-fmt: auto-format Clojure(Script) code
 
+[![Clojars Project](https://img.shields.io/clojars/v/boot-fmt.svg)](https://clojars.org/boot-fmt)
+
 A boot task for automatically reformatting your source code, similar to golang's
 [gofmt](https://golang.org/cmd/gofmt/).
 
 `boot-fmt` is powered by [zprint](https://github.com/kkinnear/zprint).
 
-NOTE: this is alpha quality software, use at your own risk
+NOTE: this is **alpha quality** software
 
 ## Rationale
 

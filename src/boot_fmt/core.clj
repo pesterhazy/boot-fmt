@@ -1,4 +1,6 @@
 (ns boot-fmt.core
+  "Reformat Clojure(script) source files"
+  {:boot/export-tasks true}
   (:require [boot-fmt.impl :as impl] [boot.core :as bc] [boot.util :as bu]))
 
 (bc/deftask
