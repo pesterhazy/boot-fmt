@@ -34,14 +34,19 @@
   (when (not= old-content new-content)
     (println "File changed:" (.getName file))))
 
+(defmethod act :overwrite [opts {:keys [old-content new-content file]}]
+  (when (not= old-content new-content)
+    (println "Overwriting file:" (.getName file))
+    (spit file new-content)))
+
 (defn process [file {:keys [mode] :as info}]
   (let [old-content (slurp file)
-        new-content (transform content)]
+        new-content (transform old-content)]
     (act info {:file file
                :old-content old-content
                :new-content new-content})
     {:file file
-     :changed? (not= content output)}))
+     :changed? (not= old-content new-content)}))
 
 (defn process-many [opts files]
   (let [changes (mapv (fn [file]

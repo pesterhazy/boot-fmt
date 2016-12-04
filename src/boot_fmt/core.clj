@@ -9,7 +9,7 @@
    f files VAL #{str} "file(s) to format"]
   (let [mode (or mode :list)]
     (assert (seq files) "At least one filename needs to be provided.")
-    (assert (#{:list :diff} mode) "Invalid mode")
+    (assert (#{:list :diff :overwrite} mode) "Invalid mode")
     (bc/with-pre-wrap fileset
       (let [files* (some->> files
                             (map clojure.java.io/file)
