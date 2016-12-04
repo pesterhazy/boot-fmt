@@ -49,10 +49,14 @@
      :changed? (not= old-content new-content)}))
 
 (defn process-many [opts files]
+  (when-not (seq files)
+    (throw (RuntimeException. "No files found")))
   (let [changes (mapv (fn [file]
-                        (bu/info "Processing %s\n" file)
+                        (bu/dbug "Processing %s\n" file)
                         (process file opts))
-                      files)]))
+                      files)]
+    #_(if-not (->> changes (filter :changed?) seq)
+        (println "No changes."))))
 
 (defn clj-file? [f]
   (and (.exists f) (.isFile f) (not (.isHidden f))

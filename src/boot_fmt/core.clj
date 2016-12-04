@@ -7,7 +7,7 @@
   "Reformat Clojure(script) source files, like gofmt"
   [m mode MODE kw "Mode"
    r really bool "Really act?"
-   f files VAL #{str} "file(s) to format"]
+   f files VAL #{str} "files or directories to format"]
   (let [mode (or mode :list)]
     (assert (seq files) "At least one filename needs to be provided.")
     (assert (#{:list :diff :overwrite} mode) "Invalid mode")
