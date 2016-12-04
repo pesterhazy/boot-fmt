@@ -1,9 +1,11 @@
-(ns boot-fmt.core)
+(ns boot-fmt.core
+  (:require [zprint.core :as zp]))
 
 (def test-fname "test/files/response.clj")
 (def test-out-fname "test/files/response-out.clj")
 
-(defn transform [s])
+(defn transform [contents]
+  (str (zp/zprint-str contents {:parse-string-all? true :parse {:interpose "\n\n"}}) "\n"))
 
 (defn run []
   (->> test-fname
