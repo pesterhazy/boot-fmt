@@ -17,18 +17,25 @@ Coming soon
 
 With [boot](https://github.com/boot-clj/boot) installed, you can use `boot-fmt` anywhere:
 
-```
+```bash
 boot -d boot-fmt/boot-fmt fmt -f src
 ```
 
-Not that this does *not* require you to use `boot` as your build tool. If you do
-use `boot`, you may also add
+Not that this does *not* require you to use `boot` as your build tool or even to
+have a `build.boot` present in the current directory. However, if you do
+use `boot` as your build tool, you may add
 [boot-fmt's coordinates](https://clojars.org/boot-fmt) as a dependency to your
 `build.boot`, e.g.:
 
-```
+```clojure
 (set-env! :dependencies '[[boot-fmt/boot-fmt "X.Y.Z" :scope "test"]])
 (require '[boot-fmt.core :refer [fmt]])
+```
+
+You can see the options available on the command line:
+
+```bash
+boot -d boot-fmt/boot-fmt fmt --help
 ```
 
 Print reformatted source code to standard output. Parameters specified using
