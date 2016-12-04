@@ -16,24 +16,30 @@
       (str basename "." nam)
       mangled)))
 
-(defn print-diff [file old nu]
+(defmulti act (fn [opts params] (:mode opts)))
+
+(defmethod act :diff [opts {:keys [file old-content new-content]}]
   (let [dir (bc/tmp-dir!)
         old-f (java.io.File. dir (mangle (.getName file) "old"))
-        nu-f (java.io.File. dir (mangle (.getName file) "new"))]
-    (spit old-f old)
-    (spit nu-f nu)
+        new-f (java.io.File. dir (mangle (.getName file) "new"))]
+    (spit old-f old-content)
+    (spit new-f new-content)
     (-> (clojure.java.shell/sh "git" "diff" "--no-index"
                                "--color"
-                               (.getAbsolutePath old-f) (.getAbsolutePath nu-f))
+                               (.getAbsolutePath old-f) (.getAbsolutePath new-f))
         :out
         println)))
 
-(defn process [file {:keys [mode]}]
-  (let [content (slurp file)
-        output (transform content)]
-    (cond
-      (= :diff mode) (print-diff file content output)
-      (= :list mode) (when (not= content output) (println "File changed:" (.getName file))))
+(defmethod act :list [opts {:keys [old-content new-content file]}]
+  (when (not= old-content new-content)
+    (println "File changed:" (.getName file))))
+
+(defn process [file {:keys [mode] :as info}]
+  (let [old-content (slurp file)
+        new-content (transform content)]
+    (act info {:file file
+               :old-content old-content
+               :new-content new-content})
     {:file file
      :changed? (not= content output)}))
 

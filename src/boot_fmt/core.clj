@@ -4,7 +4,7 @@
             [boot.util :as bu]))
 
 (bc/deftask fmt
-  "Format Clojure source files"
+  "Reformat Clojure(script) source files, like gofmt"
   [m mode MODE kw "Mode"
    f files VAL #{str} "file(s) to format"]
   (let [mode (or mode :list)]
