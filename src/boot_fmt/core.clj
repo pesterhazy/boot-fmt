@@ -28,15 +28,20 @@
         :out
         println)))
 
-(defn process [file]
+(defn process [file {:keys [mode]}]
   (let [content (slurp file)
         output (transform content)]
-    (print-diff file content output)))
+    (cond
+      (= :diff mode) (print-diff file content output)
+      (= :list mode) (when (not= content output) (println "File changed:" (.getName file))))
+    {:file file
+     :changed? (not= content output)}))
 
-(defn process-many [files]
-  (doseq [file files]
-    (bu/info "Processing %s\n" file)
-    (process file)))
+(defn process-many [opts files]
+  (let [changes (mapv (fn [file]
+                        (bu/info "Processing %s\n" file)
+                        (process file opts))
+                      files)]))
 
 (defn clj-file? [f]
   (and (.exists f) (.isFile f) (not (.isHidden f))
@@ -45,13 +50,16 @@
 
 (bc/deftask fmt
   "Format Clojure source files"
-  [f files VAL #{str} "file(s) to format"]
-  (assert (seq files) "At least one filename needs to be provided.")
-  (bc/with-pre-wrap fileset
-    (let [files* (some->> files
-                          (map clojure.java.io/file)
-                          (mapcat (fn [f]
-                                    (if (.isDirectory f) (file-seq f) [f])))
-                          (filter clj-file?))]
-      (process-many files*)
-      fileset)))
+  [m mode MODE kw "Mode"
+   f files VAL #{str} "file(s) to format"]
+  (let [mode (or mode :list)]
+    (assert (seq files) "At least one filename needs to be provided.")
+    (assert (#{:list :diff} mode) "Invalid mode")
+    (bc/with-pre-wrap fileset
+      (let [files* (some->> files
+                            (map clojure.java.io/file)
+                            (mapcat (fn [f]
+                                      (if (.isDirectory f) (file-seq f) [f])))
+                            (filter clj-file?))]
+        (process-many {:mode mode} files*)
+        fileset))))
