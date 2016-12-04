@@ -59,12 +59,9 @@
 (defn process-many
   [opts files]
   (when-not (seq files) (throw (RuntimeException. "No files found")))
-  (let [changes (mapv (fn [file] (bu/dbug "Processing %s\n" file) (process file opts))
-                      files)]
-    #_(if-not (->> changes
-                   (filter :changed?)
-                   seq)
-        (println "No changes."))))
+  (doseq [file files]
+    (bu/dbug "Processing %s\n" file)
+    (process file opts)))
 
 (defn clj-file?
   [f]
