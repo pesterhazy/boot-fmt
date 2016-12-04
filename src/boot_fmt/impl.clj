@@ -18,6 +18,10 @@
 
 (defmulti act (fn [opts params] (:mode opts)))
 
+(defmethod act :print
+  [opts {:keys [file old-content new-content]}]
+  (println new-content))
+
 (defmethod act :diff
   [opts {:keys [file old-content new-content]}]
   (let [dir (bc/tmp-dir!)
@@ -55,9 +59,8 @@
 (defn process-many
   [opts files]
   (when-not (seq files) (throw (RuntimeException. "No files found")))
-  (let [changes
-          (mapv (fn [file] (bu/dbug "Processing %s\n" file) (process file opts))
-            files)]
+  (let [changes (mapv (fn [file] (bu/dbug "Processing %s\n" file) (process file opts))
+                      files)]
     #_(if-not (->> changes
                    (filter :changed?)
                    seq)
