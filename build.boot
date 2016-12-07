@@ -1,8 +1,10 @@
-(set-env! :resource-paths #{"src"}
+(set-env! :resource-paths #{"src" "dev"}
           :dependencies '[[zprint "0.2.9"]
+                          [org.clojure/tools.nrepl "0.2.12"]
                           [org.clojure/tools.namespace "0.2.11"]])
 
-(require '[boot-fmt.core :refer [fmt]])
+(require '[boot-fmt.core :refer [fmt]]
+         '[boot-fmt.impl :as impl])
 
 (def +version+ "0.1")
 
@@ -34,3 +36,8 @@
   (comp (build)
         (push :repo "clojars"
               :gpg-sign false #_(not (.endsWith +version+ "-SNAPSHOT")))))
+
+(deftask example []
+  (println "Reading from stdin...\n")
+  (let [code (slurp *in*)]
+    (impl/example code)))

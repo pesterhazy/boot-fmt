@@ -3,8 +3,7 @@
 
 (defn transform
   [contents]
-  (str (zp/zprint-str contents
-                      {:parse-string-all? true, :parse {:interpose "\n\n"}})
+  (str (zp/zprint-str contents {:parse-string-all? true, :parse {:interpose "\n\n"}})
        "\n"))
 
 (defn mangle
@@ -16,17 +15,10 @@
                                               (str "." nam "$1"))]
     (if (= mangled basename) (str basename "." nam) mangled)))
 
-(defmulti act (fn [opts params] (:mode opts)))
-
-(defmethod act :print
-  [opts {:keys [file old-content new-content]}]
-  (println new-content))
-
-(defmethod act :diff
-  [opts {:keys [file old-content new-content]}]
+(defn diff [old-fname new-fname old-content new-content]
   (let [dir (bc/tmp-dir!)
-        old-f (java.io.File. dir (mangle (.getName file) "old"))
-        new-f (java.io.File. dir (mangle (.getName file) "new"))]
+        old-f (java.io.File. dir old-fname)
+        new-f (java.io.File. dir new-fname)]
     (spit old-f old-content)
     (spit new-f new-content)
     (-> (clojure.java.shell/sh "git"
@@ -37,6 +29,23 @@
                                (.getAbsolutePath new-f))
         :out
         println)))
+
+(defn example [old-content]
+  (let [new-content (transform old-content)]
+    (diff "old" "new" old-content new-content)))
+
+(defmulti act (fn [opts params] (:mode opts)))
+
+(defmethod act :print
+  [opts {:keys [file old-content new-content]}]
+  (println new-content))
+
+(defmethod act :diff
+  [opts {:keys [file old-content new-content]}]
+  (diff (mangle (.getName file) "old")
+        (mangle (.getName file) "new")
+        old-content
+        new-content))
 
 (defmethod act :list
   [opts {:keys [old-content new-content file]}]
