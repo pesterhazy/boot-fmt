@@ -1,24 +1,49 @@
 (ns boot-fmt.impl
-  (:require [zprint.core :as zp] [boot.core :as bc] [boot.util :as bu]))
+  (:require [zprint.core :as zp]
+            [zprint.config :as zc]
+            [zprint.zprint :as zprint]
+            [zprint.zutil :as zutil]
+            [rewrite-clj.parser :as p]
+            [boot.core :as bc] [boot.util :as bu]))
+
+(defn zprint-whole
+  [wholefile file-name]
+  ;; FIXME
+  ;; Copy 'n paste job from zprint.core
+  (let [lines (clojure.string/split wholefile #"\n")
+        lines (if (:expand? (:tab (zc/get-options)))
+                (map (partial zprint/expand-tabs (:size (:tab (zc/get-options))))
+                     lines)
+                lines)
+        filestring (clojure.string/join "\n" lines)
+                                        ; If file ended with a \newline, make sure it still does
+        filestring (if (= (last wholefile) \newline)
+                     (str filestring "\n")
+                     filestring)
+        forms (zutil/edn* (p/parse-string-all filestring))]
+    (zprint.core/process-multiple-forms {:process-bang-zprint? true}
+                                        zprint.core/zprint-str-internal
+                                        (str "file: " file-name)
+                                        forms)))
+
 
 (defn transform
-  [contents]
-  (str (zp/zprint-str contents {:parse-string-all? true, :parse {:interpose "\n\n"}})
-       "\n"))
+  [contents file-name]
+  (zprint-whole contents file-name))
 
 (defn mangle
-  [fname nam]
-  (let [basename (-> (clojure.string/split fname #"/")
+  [file-name nam]
+  (let [basename (-> (clojure.string/split file-name #"/")
                      last)
         mangled (clojure.string/replace-first basename
                                               #"(\.[^.]*$)"
                                               (str "." nam "$1"))]
     (if (= mangled basename) (str basename "." nam) mangled)))
 
-(defn diff [old-fname new-fname old-content new-content]
+(defn diff [old-file-name new-file-name old-content new-content]
   (let [dir (bc/tmp-dir!)
-        old-f (java.io.File. dir old-fname)
-        new-f (java.io.File. dir new-fname)]
+        old-f (java.io.File. dir old-file-name)
+        new-f (java.io.File. dir new-file-name)]
     (spit old-f old-content)
     (spit new-f new-content)
     (-> (clojure.java.shell/sh "git"
@@ -31,7 +56,7 @@
         println)))
 
 (defn example [old-content]
-  (let [new-content (transform old-content)]
+  (let [new-content (transform old-content "old")]
     (diff "old" "new" old-content new-content)))
 
 (defmulti act (fn [opts params] (:mode opts)))
@@ -61,7 +86,7 @@
 (defn process
   [file {:keys [mode], :as info}]
   (let [old-content (slurp file)
-        new-content (transform old-content)]
+        new-content (transform old-content (.getName file))]
     (act info {:file file, :old-content old-content, :new-content new-content})
     {:file file, :changed? (not= old-content new-content)}))
 
