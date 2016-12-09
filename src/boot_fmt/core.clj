@@ -5,9 +5,35 @@
 
 (bc/deftask
   fmt
-  "Reformat Clojure(script) source files, like gofmt"
-  [m mode MODE kw "Mode" r really bool "Really act?" f files VAL #{str}
-   "files or directories to format"]
+  "Reformat Clojure(script) source files, like gofmt
+
+Print reformatted source code to standard output. Parameters specified using
+`-f` can be files or directories. Directories are scanned recursively for
+Clojure(Script) source files.
+
+Specify the operation using the --mode paramter:
+
+--mode print (default)
+
+  Print reformatted code to standard output
+
+--mode diff
+
+  When reformatted code is different from original, print diff to standard output.
+
+--mode list
+
+  Where reformatted code is different from original, print filename standard output.
+
+--mode overwrite
+
+  Overwrite files with reformatted code. As this is a potentially dangerous
+  operation, you need to specify the --really flag in addition to setting
+  the --mode parameter"
+
+  [m mode MODE kw "Mode of operation, i.e. print, list, diff or overwrite. Defaults to print"
+   r really bool "In overwrite mode, files are overwritten only if the --really flag is set as well"
+   f files VAL #{str} "The list of files or directories to format"]
   (let [mode (or mode :print)]
     (assert (seq files) "At least one filename needs to be provided.")
     (assert (#{:print :list :diff :overwrite} mode) "Invalid mode")

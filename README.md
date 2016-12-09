@@ -42,16 +42,25 @@ Print reformatted source code to standard output. Parameters specified using
 `-f` can be files or directories. Directories are scanned recursively for
 Clojure(Script) source files.
 
-Specify the opeartion using the `--mode` paramter:
+Specify the operation using the --mode paramter:
 
-- `--mode print` (default): print reformatted code to standard output
-- `--mode diff`: if reformatted code is different from original, print diff to
-standard output.
-- `--mode list`: where reformatted code is different from original, print filename
-standard output.
-- `--mode overwrite`: overwrite files with reformatted code. As this is a
-  potentially dangerous operation, you need to specify the `--really` flag in
-  addition to setting `--mode`.
+--mode print (default)
+
+Print reformatted code to standard output
+
+--mode diff
+
+When reformatted code is different from original, print diff to standard output.
+
+--mode list
+
+Where reformatted code is different from original, print filename standard output.
+
+--mode overwrite
+
+Overwrite files with reformatted code. As this is a potentially dangerous
+operation, you need to specify the --really flag in addition to setting
+the --mode parameter
 
 ## Author
 
