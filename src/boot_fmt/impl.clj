@@ -91,7 +91,8 @@
     {:file file, :changed? (not= old-content new-content)}))
 
 (defn process-many
-  [opts files]
+  [{:keys [zprint-options], :as opts} files]
+  (zprint.core/set-options! zprint-options)
   (when-not (seq files) (throw (RuntimeException. "No files found")))
   (doseq [file files]
     (bu/dbug "Processing %s\n" file)

@@ -33,7 +33,8 @@ Specify the operation using the --mode paramter:
 
   [m mode MODE kw "Mode of operation, i.e. print, list, diff or overwrite. Defaults to print"
    r really bool "In overwrite mode, files are overwritten only if the --really flag is set as well"
-   f files VAL #{str} "The list of files or directories to format"]
+   f files VAL #{str} "The list of files or directories to format"
+   o options OPTS edn "zprint options"]
   (let [mode (or mode :print)]
     (assert (seq files) "At least one filename needs to be provided.")
     (assert (#{:print :list :diff :overwrite} mode) "Invalid mode")
@@ -46,5 +47,6 @@ Specify the operation using the --mode paramter:
                             (mapcat (fn [f]
                                       (if (.isDirectory f) (file-seq f) [f])))
                             (filter impl/clj-file?))]
-        (impl/process-many {:mode mode} files*)
+        (impl/process-many {:mode mode
+                            :zprint-options options} files*)
         fileset))))

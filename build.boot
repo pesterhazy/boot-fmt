@@ -22,6 +22,13 @@
                                       (merge {:username (System/getenv "CLOJARS_USER")
                                               :password (System/getenv "CLOJARS_PASS")}))]])
 
+(task-options! fmt
+               {:files #{"src"},
+                :options
+                {:fn-map {":require" :force-nl-body}
+                 :list {:indent-arg 1}
+                 :fn-force-nl #{:force-nl :noarg1 :noarg1-body :force-nl-body :binding}}})
+
 (deftask build []
   (comp (pom)
         (jar)
