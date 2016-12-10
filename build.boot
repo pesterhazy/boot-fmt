@@ -23,11 +23,14 @@
                                               :password (System/getenv "CLOJARS_PASS")}))]])
 
 (task-options! fmt
-               {:files #{"src"},
-                :options
-                {:fn-map {":require" :force-nl-body}
-                 :list {:indent-arg 1}
+               {:options
+                {:fn-map {":require" :force-nl-body
+                          "ns" :arg1-body}
+                 :style :community
                  :fn-force-nl #{:force-nl :noarg1 :noarg1-body :force-nl-body :binding}}})
+
+(deftask fmt-self []
+  (fmt {:files #{"src"}}))
 
 (deftask build []
   (comp (pom)
