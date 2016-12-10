@@ -38,6 +38,7 @@ You can see the options available on the command line:
 boot -d boot-fmt/boot-fmt fmt --help
 ```
 
+```
 Print reformatted source code to standard output. Parameters specified using
 `-f` can be files or directories. Directories are scanned recursively for
 Clojure(Script) source files.
@@ -61,6 +62,23 @@ Where reformatted code is different from original, print filename standard outpu
 Overwrite files with reformatted code. As this is a potentially dangerous
 operation, you need to specify the --really flag in addition to setting
 the --mode parameter
+
+Options:
+-h, --help          Print this help info.
+-m, --mode MODE     MODE sets mode of operation, i.e. print, list, diff or overwrite. Defaults to print.
+-r, --really        In overwrite mode, files are overwritten only if the --really flag is set as well
+-f, --files VAL     Conj VAL onto the list of files or directories to format
+-o, --options OPTS  OPTS sets zprint options.
+```
+
+## Configuration
+
+You can supply a map of [zprint options](https://github.com/kkinnear/zprint#overview)
+using the `--options` parameter:
+
+```
+boot fmt -f src --options '{:style :community, :fn-map {":require" :force-nl-body, "ns" :arg1-body}}'
+```
 
 ## Author
 
