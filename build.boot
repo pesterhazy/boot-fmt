@@ -23,7 +23,8 @@
                             :password (System/getenv "CLOJARS_PASS")}))]])
 
 (task-options! fmt
-               {:options {:fn-map {":require" :force-nl-body, "ns" :arg1-body},
+               {:mode :diff
+                :options {:fn-map {":require" :force-nl-body, "ns" :arg1-body},
                           :style :community,
                           :fn-force-nl #{:force-nl :noarg1 :noarg1-body
                                          :force-nl-body :binding}}})
