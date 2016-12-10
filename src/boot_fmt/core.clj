@@ -1,10 +1,13 @@
 (ns boot-fmt.core
   "Reformat Clojure(script) source files"
   {:boot/export-tasks true}
-  (:require [boot-fmt.impl :as impl] [boot.core :as bc] [boot.util :as bu]))
+  (:require [boot-fmt.impl :as impl]
+            [boot.core :as bc]
+            [boot.util :as bu]))
 
-(bc/deftask
-  fmt
+;!zprint {:format :skip}
+
+(bc/deftask fmt
   "Reformat Clojure(script) source files, like gofmt
 
 Print reformatted source code to standard output. Parameters specified using

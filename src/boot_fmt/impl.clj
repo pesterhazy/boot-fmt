@@ -4,7 +4,8 @@
             [zprint.zprint :as zprint]
             [zprint.zutil :as zutil]
             [rewrite-clj.parser :as p]
-            [boot.core :as bc] [boot.util :as bu]))
+            [boot.core :as bc]
+            [boot.util :as bu]))
 
 (defn zprint-whole
   [wholefile file-name]
@@ -12,14 +13,14 @@
   ;; Copy 'n paste job from zprint.core
   (let [lines (clojure.string/split wholefile #"\n")
         lines (if (:expand? (:tab (zc/get-options)))
-                (map (partial zprint/expand-tabs (:size (:tab (zc/get-options))))
+                (map (partial zprint/expand-tabs
+                              (:size (:tab (zc/get-options))))
                      lines)
                 lines)
         filestring (clojure.string/join "\n" lines)
-                                        ; If file ended with a \newline, make sure it still does
-        filestring (if (= (last wholefile) \newline)
-                     (str filestring "\n")
-                     filestring)
+        ; If file ended with a \newline, make sure it still does
+        filestring
+        (if (= (last wholefile) \newline) (str filestring "\n") filestring)
         forms (zutil/edn* (p/parse-string-all filestring))]
     (zprint.core/process-multiple-forms {:process-bang-zprint? true}
                                         zprint.core/zprint-str-internal
@@ -27,9 +28,7 @@
                                         forms)))
 
 
-(defn transform
-  [contents file-name]
-  (zprint-whole contents file-name))
+(defn transform [contents file-name] (zprint-whole contents file-name))
 
 (defn mangle
   [file-name nam]
@@ -40,7 +39,8 @@
                                               (str "." nam "$1"))]
     (if (= mangled basename) (str basename "." nam) mangled)))
 
-(defn diff [old-file-name new-file-name old-content new-content]
+(defn diff
+  [old-file-name new-file-name old-content new-content]
   (let [dir (bc/tmp-dir!)
         old-f (java.io.File. dir old-file-name)
         new-f (java.io.File. dir new-file-name)]
@@ -55,7 +55,8 @@
         :out
         println)))
 
-(defn example [old-content]
+(defn example
+  [old-content]
   (let [new-content (transform old-content "old")]
     (diff "old" "new" old-content new-content)))
 
