@@ -160,6 +160,8 @@ boot fmt -f src --options '{:style :community, :fn-map {":require" :force-nl-bod
 - Optionally scan for source files in current git repository
 - Optionally scan for source files in boot's `:source-paths` and `:resource-paths`
 
-## Author
+## License
 
-`boot-fmt` is written by Paulus Esterhazy.
+Copyright © 2016 Paulu Esterhazy
+
+Distributed under the Eclipse Public License either version 1.0 or (at your option) any later version.
