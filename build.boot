@@ -39,6 +39,17 @@
        :source true
        :really really))
 
+(defn replace-help [outer inner]
+  (clojure.string/replace outer
+                          #"(?m)(?s)(<!-- begin help -->)(.*)(<!-- end help -->)$"
+                          (fn [[_ a b c]] (str a "```\n\n" inner "\n```\n" c))))
+
+(deftask update-help []
+  (with-pre-wrap fileset
+    (->> (replace-help (slurp "README.md") (with-out-str (boot.core/boot "fmt" "-h")))
+        (spit "README.md"))
+    fileset))
+
 (deftask build [] (comp (pom) (jar) (install)))
 
 (deftask deploy

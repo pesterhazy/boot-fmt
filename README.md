@@ -38,7 +38,12 @@ You can see the options available on the command line:
 boot -d boot-fmt/boot-fmt fmt --help
 ```
 
-```
+Here's the output:
+
+<!-- begin help -->```
+
+Reformat Clojure(script) source files, like gofmt
+
 Print reformatted source code to standard output. Parameters specified using
 `-f` can be files or directories. Directories are scanned recursively for
 Clojure(Script) source files.
@@ -64,12 +69,16 @@ operation, you need to specify the --really flag in addition to setting
 the --mode parameter
 
 Options:
--h, --help          Print this help info.
--m, --mode MODE     MODE sets mode of operation, i.e. print, list, diff or overwrite. Defaults to print.
--r, --really        In overwrite mode, files are overwritten only if the --really flag is set as well
--f, --files VAL     Conj VAL onto the list of files or directories to format
--o, --options OPTS  OPTS sets zprint options.
+  -h, --help          Print this help info.
+  -m, --mode MODE     MODE sets mode of operation, i.e. print, list, diff or overwrite. Defaults to print.
+  -r, --really        In overwrite mode, files are overwritten only if the --really flag is set as well
+  -f, --files VAL     Conj VAL onto the list of files or directories to format
+  -s, --source        Automatically scan for source files in boot source directories
+  -g, --git           Automatically scan for source files in current git repository
+  -o, --options OPTS  OPTS sets zprint options.
+
 ```
+<!-- end help -->
 
 ## Configuration
 
