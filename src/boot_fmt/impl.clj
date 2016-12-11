@@ -40,23 +40,21 @@
 (defn diff
   [old-file-name new-file-name old-content new-content]
   (let [tempdir (Files/createTempDir)]
-    (try
-      (let [old-f (java.io.File. tempdir old-file-name)
-            new-f (java.io.File. tempdir new-file-name)]
-        (spit old-f old-content)
-        (spit new-f new-content)
-        (-> (clojure.java.shell/sh "git"
-                                   "diff"
-                                   "--no-index"
-                                   "--color"
-                                   (.getAbsolutePath old-f)
-                                   (.getAbsolutePath new-f))
-            :out
-            println))
-      (finally
-        (doseq [file (.listFiles tempdir)]
-          (.delete file))
-        (.delete tempdir)))))
+    (try (let [old-f (java.io.File. tempdir old-file-name)
+               new-f (java.io.File. tempdir new-file-name)]
+           (spit old-f old-content)
+           (spit new-f new-content)
+           (-> (clojure.java.shell/sh "git"
+                                      "diff"
+                                      "--no-index"
+                                      "--color"
+                                      (.getAbsolutePath old-f)
+                                      (.getAbsolutePath new-f))
+               :out
+               println))
+         (finally (doseq [file (.listFiles tempdir)]
+                    (.delete file))
+                  (.delete tempdir)))))
 
 (defn example
   [old-content]
@@ -101,5 +99,6 @@
   (doseq [file files]
     (process file opts)))
 
-(defn process-many-file-names [opts file-names]
+(defn process-many-file-names
+  [opts file-names]
   (process-many opts (map #(java.io.File. %) file-names)))

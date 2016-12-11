@@ -7,20 +7,21 @@
             [boot.core :as bc]
             [boot.util :as bu]))
 
-(def pod-deps
-  '[[zprint "0.2.9"]
-    [com.google.guava/guava "18.0"]])
+(def pod-deps '[[zprint "0.2.9"] [com.google.guava/guava "18.0"]])
 
-(defn find-files-git []
-  (let [{:keys [exit out err]} (clojure.java.shell/sh "git" "ls-files" "-z" "*.clj" "*.cljs" "*.cljc" "*.boot")]
-    (when (not= exit 0)
-      (throw (ex-info "git ls-files failed"
-                      {:err err})))
+(defn find-files-git
+  []
+  (let [{:keys [exit out err]} (clojure.java.shell/sh "git"
+                                                      "ls-files" "-z"
+                                                      "*.clj" "*.cljs"
+                                                      "*.cljc" "*.boot")]
+    (when (not= exit 0) (throw (ex-info "git ls-files failed" {:err err})))
     (-> out
         (clojure.string/split #"\000")
         set)))
 
-(defn find-files-source []
+(defn find-files-source
+  []
   (clojure.set/union (bc/get-env :source-paths) (bc/get-env :resource-paths)))
 
 ;!zprint {:format :skip}
