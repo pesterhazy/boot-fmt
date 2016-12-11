@@ -7,8 +7,8 @@
 (defn get-version []
   (read-string (slurp "release.edn")))
 
-(defn format-version [segments]
-  (clojure.string/join "." segments))
+(defn format-version [{:keys [version]}]
+  (clojure.string/join "." version))
 
 (task-options! pom
                {:project 'boot-fmt/boot-fmt,
