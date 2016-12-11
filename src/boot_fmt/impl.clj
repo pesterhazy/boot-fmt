@@ -18,7 +18,6 @@
                      lines)
                 lines)
         filestring (clojure.string/join "\n" lines)
-        ; If file ended with a \newline, make sure it still does
         filestring
         (if (= (last wholefile) \newline) (str filestring "\n") filestring)
         forms (zutil/edn* (p/parse-string-all filestring))]

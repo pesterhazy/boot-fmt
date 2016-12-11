@@ -30,11 +30,14 @@
                           :fn-force-nl #{:force-nl :noarg1 :noarg1-body
                                          :force-nl-body :binding}}})
 
-(deftask
- dogfood
- "Reformat this very repository"
- [m mode MODE kw "mode" r really bool "really"]
- (fmt :files #{"src" "build.boot"} :mode (or mode :diff) :really really))
+;!zprint {:format :skip}
+(deftask dogfood
+  "Reformat this very repository"
+  [m mode MODE kw "mode"
+   r really bool "really"]
+  (fmt :mode (or mode :diff)
+       :source true
+       :really really))
 
 (deftask build [] (comp (pom) (jar) (install)))
 
