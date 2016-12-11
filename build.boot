@@ -42,14 +42,16 @@
                           (fn [[_ a b c]] (str a "\n\n```\n" inner "\n```\n" c))))
 
 (deftask update-help []
-  (with-pre-wrap fileset
+  (with-pass-thru [_]
     (->> (replace-help (slurp "README.md") (with-out-str (boot.core/boot "fmt" "-h")))
-        (spit "README.md"))
-    fileset))
+         (spit "README.md"))))
 
 (deftask bump
   []
-  (spit "release.edn" (update-in (get-version) [:version 2] inc)))
+  (with-pass-thru [_]
+    (let [version (update-in (get-version) [:version 2] inc)]
+      (boot.util/info "Bumped to version: %s\n" (format-version version))
+      (spit "release.edn" version))))
 
 (deftask build [] (comp (pom :version (format-version (get-version))) (jar) (install)))
 
@@ -60,3 +62,17 @@
                      "clojars"
                      :gpg-sign
                      false)))
+
+(deftask confirm []
+  (with-pass-thru [_]
+    (println)
+    (print "Enter \"Yes\" (without the quotes) to continue: ")
+    (flush)
+    (when (not= (read-line) "Yes")
+      (throw (ex-info "Interrupted" {})))))
+
+(deftask release []
+  (comp (update-help)
+        (dogfood :mode :overwrite :really true)
+        (confirm)
+        (deploy)))

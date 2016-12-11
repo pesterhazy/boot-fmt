@@ -33,7 +33,7 @@ Print reformatted source code to standard output. Parameters specified using
 `-f` can be files or directories. Directories are scanned recursively for
 Clojure(Script) source files.
 
-Specify the operation using the --mode paramter:
+Specify the operation using the --mode parameter:
 
 --mode print (default)
 
