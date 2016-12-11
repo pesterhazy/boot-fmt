@@ -45,7 +45,7 @@
 (defn replace-help [outer inner]
   (clojure.string/replace outer
                           #"(?m)(?s)(<!-- begin help -->)(.*)(<!-- end help -->)$"
-                          (fn [[_ a b c]] (str a "```\n\n" inner "\n```\n" c))))
+                          (fn [[_ a b c]] (str a "\n\n```\n" inner "\n```\n" c))))
 
 (deftask update-help []
   (with-pre-wrap fileset

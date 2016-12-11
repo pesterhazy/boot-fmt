@@ -104,8 +104,9 @@ boot -d boot-fmt/boot-fmt fmt --help
 
 Here's the output:
 
-<!-- begin help -->```
+<!-- begin help -->
 
+```
 Reformat Clojure(script) source files, like gofmt
 
 Print reformatted source code to standard output. Parameters specified using
@@ -137,8 +138,8 @@ Options:
   -m, --mode MODE     MODE sets mode of operation, i.e. print, list, diff or overwrite. Defaults to print.
   -r, --really        In overwrite mode, files are overwritten only if the --really flag is set as well
   -f, --files VAL     Conj VAL onto the list of files or directories to format
-  -s, --source        Automatically scan for source files in boot source directories
-  -g, --git           Automatically scan for source files in current git repository
+  -s, --source        Automatically scan for files in boot source-paths and resource-paths
+  -g, --git           Automatically scan for files in current git repository
   -o, --options OPTS  OPTS sets zprint options.
 
 ```
