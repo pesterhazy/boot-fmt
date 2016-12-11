@@ -5,13 +5,15 @@
 A boot task for automatically reformatting your source code, similar to golang's
 [gofmt](https://golang.org/cmd/gofmt/).
 
-boot-fmt is powered by [zprint](https://github.com/kkinnear/zprint).
+## Motivation
 
-NOTE: this is **alpha quality** software
+Beautiful machine-formatted Clojure code saves you time, helps you find bugs,
+and avoids quibbles with collaborators. `gofmt`'s success has shown that
+auto-formatting works for many golang teams; boot-fmt hopes to bring the same benefits
+to Clojure(Script).
 
-## Rationale
-
-Coming soon
+Powered by [zprint](https://github.com/kkinnear/zprint) and [clj-rewrite](https://github.com/xsc/rewrite-clj),
+boot-fmt aims to provide a friendly command-line interface.
 
 ## Usage
 
