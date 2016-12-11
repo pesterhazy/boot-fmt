@@ -1,10 +1,10 @@
 (set-env! :resource-paths #{"src" "dev"}
-          :dependencies '[[zprint "0.2.9"]]
+          :dependencies '[]
           :repositories
           (partial map (fn [[k v]] [k (cond-> v (#{"clojars"} k) (assoc :username (System/getenv "CLOJARS_USER"),
                                                                 :password (System/getenv "CLOJARS_PASS")))])))
 
-(require '[boot-fmt.core :refer [fmt]] '[boot-fmt.impl :as impl])
+(require '[boot-fmt.core :refer [fmt]])
 
 (task-options! pom
                {:project 'boot-fmt/boot-fmt,
@@ -60,9 +60,3 @@
                      "clojars"
                      :gpg-sign
                      false)))
-
-(deftask example
-         []
-         (println "Reading from stdin...\n")
-         (let [code (slurp *in*)]
-           (impl/example code)))

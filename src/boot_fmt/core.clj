@@ -4,12 +4,15 @@
   (:require [clojure.set]
             [clojure.string]
             [clojure.java.shell]
-            [boot-fmt.impl :as impl]
             [boot.core :as bc]
             [boot.util :as bu]))
 
+(def pod-deps
+  '[[zprint "0.2.9"]
+    [com.google.guava/guava "18.0"]])
+
 (defn find-files-git []
-  (let [{:keys [exit out err]} (clojure.java.shell/sh "git" "ls-fileszzz" "-z" "*.clj" "*.cljs" "*.cljc" "*.boot")]
+  (let [{:keys [exit out err]} (clojure.java.shell/sh "git" "ls-files" "-z" "*.clj" "*.cljs" "*.cljc" "*.boot")]
     (when (not= exit 0)
       (throw (ex-info "git ls-files failed"
                       {:err err})))
@@ -63,15 +66,25 @@ Specify the operation using the --mode paramter:
     (assert (#{:print :list :diff :overwrite} mode) "Invalid mode")
     (assert (or (not= :overwrite mode) really)
             "In overwrite mode, add the --really flag")
-    (bc/with-pre-wrap
-      fileset
-      (let [files* (some->> files
-                            (map clojure.java.io/file)
-                            (mapcat (fn [f]
-                                      (if (.isDirectory f) (file-seq f) [f])))
-                            (filter impl/clj-file?)
-                            set
-                            sort)]
-        (impl/process-many {:mode mode
-                            :zprint-options options} files*)
-        fileset))))
+    (let [pod (boot.pod/make-pod (update (bc/get-env) :dependencies concat pod-deps))]
+      (bc/with-pre-wrap
+        fileset
+        (let [files* (some->> files
+                              (map clojure.java.io/file)
+                              (mapcat (fn [f]
+                                        (if (.isDirectory f) (file-seq f) [f])))
+                              (filter (fn [f]
+                                        (and (.exists f)
+                                             (.isFile f)
+                                             (not (.isHidden f))
+                                             (contains? #{"clj" "cljs" "cljc" "cljx" "boot"}
+                                                        (last (.split (.toLowerCase (.getName f)) "\\."))))))
+                              (map #(.getPath %))
+                              set
+                              sort)]
+          (boot.pod/with-eval-in pod (require 'boot-fmt.impl))
+          (boot.pod/with-call-in pod
+            (boot-fmt.impl/process-many-file-names {:mode ~mode
+                                                    :zprint-options ~options}
+                                                   ~files*))
+          fileset)))))

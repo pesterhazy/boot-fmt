@@ -3,9 +3,8 @@
             [zprint.config :as zc]
             [zprint.zprint :as zprint]
             [zprint.zutil :as zutil]
-            [rewrite-clj.parser :as p]
-            [boot.core :as bc]
-            [boot.util :as bu]))
+            [rewrite-clj.parser :as p])
+  (:import [com.google.common.io Files]))
 
 (defn zprint-whole
   [wholefile file-name]
@@ -40,19 +39,24 @@
 
 (defn diff
   [old-file-name new-file-name old-content new-content]
-  (let [dir (bc/tmp-dir!)
-        old-f (java.io.File. dir old-file-name)
-        new-f (java.io.File. dir new-file-name)]
-    (spit old-f old-content)
-    (spit new-f new-content)
-    (-> (clojure.java.shell/sh "git"
-                               "diff"
-                               "--no-index"
-                               "--color"
-                               (.getAbsolutePath old-f)
-                               (.getAbsolutePath new-f))
-        :out
-        println)))
+  (let [tempdir (Files/createTempDir)]
+    (try
+      (let [old-f (java.io.File. tempdir old-file-name)
+            new-f (java.io.File. tempdir new-file-name)]
+        (spit old-f old-content)
+        (spit new-f new-content)
+        (-> (clojure.java.shell/sh "git"
+                                   "diff"
+                                   "--no-index"
+                                   "--color"
+                                   (.getAbsolutePath old-f)
+                                   (.getAbsolutePath new-f))
+            :out
+            println))
+      (finally
+        (doseq [file (.listFiles tempdir)]
+          (.delete file))
+        (.delete tempdir)))))
 
 (defn example
   [old-content]
@@ -95,13 +99,7 @@
   (zprint.core/set-options! zprint-options)
   (when-not (seq files) (throw (RuntimeException. "No files found")))
   (doseq [file files]
-    (bu/dbug "Processing %s\n" file)
     (process file opts)))
 
-(defn clj-file?
-  [f]
-  (and (.exists f)
-       (.isFile f)
-       (not (.isHidden f))
-       (contains? #{"clj" "cljs" "cljc" "cljx" "boot"}
-                  (last (.split (.toLowerCase (.getName f)) "\\.")))))
+(defn process-many-file-names [opts file-names]
+  (process-many opts (map #(java.io.File. %) file-names)))
