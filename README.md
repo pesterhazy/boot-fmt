@@ -156,6 +156,10 @@ boot fmt -f src --options '{:style :community, :fn-map {":require" :force-nl-bod
 
 ## Changes
 
+### 0.1.3
+
+- Isolate dependencies in pods
+
 ### 0.1.2
 
 - Optionally scan for source files in current git repository
