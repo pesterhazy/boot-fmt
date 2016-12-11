@@ -1,11 +1,8 @@
 (set-env! :resource-paths #{"src" "dev"}
           :dependencies '[[zprint "0.2.9"]]
           :repositories
-          [["clojars"
-            (cond-> {:url "https://clojars.org/repo/"}
-              (System/getenv "CLOJARS_USER")
-              (merge {:username (System/getenv "CLOJARS_USER"),
-                      :password (System/getenv "CLOJARS_PASS")}))]])
+          (partial map (fn [[k v]] [k (cond-> v (#{"clojars"} k) (assoc :username (System/getenv "CLOJARS_USER"),
+                                                                :password (System/getenv "CLOJARS_PASS")))])))
 
 (require '[boot-fmt.core :refer [fmt]] '[boot-fmt.impl :as impl])
 
