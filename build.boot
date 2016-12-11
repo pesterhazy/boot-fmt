@@ -1,14 +1,13 @@
 (set-env! :resource-paths #{"src" "dev"}
-          :dependencies '[[zprint "0.2.9"] [org.clojure/tools.nrepl "0.2.12"]
-                          [org.clojure/tools.namespace "0.2.11"]])
+          :dependencies '[[zprint "0.2.9"]]
+          :repositories
+          [["clojars"
+            (cond-> {:url "https://clojars.org/repo/"}
+              (System/getenv "CLOJARS_USER")
+              (merge {:username (System/getenv "CLOJARS_USER"),
+                      :password (System/getenv "CLOJARS_PASS")}))]])
 
 (require '[boot-fmt.core :refer [fmt]] '[boot-fmt.impl :as impl])
-
-(defn get-version []
-  (read-string (slurp "release.edn")))
-
-(defn format-version [{:keys [version]}]
-  (clojure.string/join "." version))
 
 (task-options! pom
                {:project 'boot-fmt/boot-fmt,
@@ -16,22 +15,20 @@
                 :url "https://github.com/pesterhazy/boot-fmt",
                 :scm {:url "https://github.com/pesterhazy/boot-fmt"},
                 :license {"Eclipse Public License"
-                          "http://www.eclipse.org/legal/epl-v10.html"}})
+                          "http://www.eclipse.org/legal/epl-v10.html"}}
 
-
-(set-env! :repositories
-          [["clojars"
-            (cond-> {:url "https://clojars.org/repo/"}
-              (System/getenv "CLOJARS_USER")
-              (merge {:username (System/getenv "CLOJARS_USER"),
-                      :password (System/getenv "CLOJARS_PASS")}))]])
-
-(task-options! fmt
+               fmt
                {:mode :diff
                 :options {:fn-map {":require" :force-nl-body, "ns" :arg1-body},
                           :style :community,
                           :fn-force-nl #{:force-nl :noarg1 :noarg1-body
                                          :force-nl-body :binding}}})
+
+(defn get-version []
+  (read-string (slurp "release.edn")))
+
+(defn format-version [{:keys [version]}]
+  (clojure.string/join "." version))
 
 ;!zprint {:format :skip}
 (deftask dogfood
