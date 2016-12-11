@@ -7,7 +7,7 @@ A boot task for automatically reformatting your source code, similar to golang's
 
 ## Motivation
 
-Beautiful machine-formatted Clojure code saves you time, helps you find bugs,
+Beautiful machine-formatted source code saves you time, helps you find bugs,
 and avoids quibbles with collaborators. `gofmt`'s success has shown that
 auto-formatting works for many golang teams; boot-fmt hopes to bring the same benefits
 to Clojure(Script).
@@ -113,7 +113,7 @@ Print reformatted source code to standard output. Parameters specified using
 `-f` can be files or directories. Directories are scanned recursively for
 Clojure(Script) source files.
 
-Specify the operation using the --mode paramter:
+Specify the operation using the --mode parameter:
 
 --mode print (default)
 
@@ -163,6 +163,6 @@ boot fmt -f src --options '{:style :community, :fn-map {":require" :force-nl-bod
 
 ## License
 
-Copyright © 2016 Paulu Esterhazy
+Copyright © 2016 Paulus Esterhazy
 
 Distributed under the Eclipse Public License either version 1.0 or (at your option) any later version.
