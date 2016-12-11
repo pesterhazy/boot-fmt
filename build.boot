@@ -4,11 +4,14 @@
 
 (require '[boot-fmt.core :refer [fmt]] '[boot-fmt.impl :as impl])
 
-(def +version+ "0.1.1")
+(defn get-version []
+  (read-string (slurp "release.edn")))
+
+(defn format-version [segments]
+  (clojure.string/join "." segments))
 
 (task-options! pom
                {:project 'boot-fmt/boot-fmt,
-                :version +version+,
                 :description "Boot task to auto-format Clojure(Script) code",
                 :url "https://github.com/pesterhazy/boot-fmt",
                 :scm {:url "https://github.com/pesterhazy/boot-fmt"},
@@ -50,7 +53,11 @@
         (spit "README.md"))
     fileset))
 
-(deftask build [] (comp (pom) (jar) (install)))
+(deftask bump
+  []
+  (spit "release.edn" (update-in (get-version) [:version 2] inc)))
+
+(deftask build [] (comp (pom :version (format-version (get-version))) (jar) (install)))
 
 (deftask deploy
          []
@@ -58,8 +65,7 @@
                (push :repo
                      "clojars"
                      :gpg-sign
-                     false
-                     #_(not (.endsWith +version+ "-SNAPSHOT")))))
+                     false)))
 
 (deftask example
          []
