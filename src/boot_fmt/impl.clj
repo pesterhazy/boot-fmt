@@ -76,12 +76,12 @@
 (defmethod act :list
   [opts {:keys [old-content new-content file]}]
   (when (not= old-content new-content)
-    (println "File changed:" (.getName file))))
+    (println "File changed:" (.getPath file))))
 
 (defmethod act :overwrite
   [opts {:keys [old-content new-content file]}]
   (when (not= old-content new-content)
-    (println "Overwriting file:" (.getName file))
+    (println "Overwriting file:" (.getPath file))
     (spit file new-content)))
 
 (defn process

@@ -1,7 +1,8 @@
 (ns boot-fmt.core
   "Reformat Clojure(script) source files"
   {:boot/export-tasks true}
-  (:require [boot-fmt.impl :as impl]
+  (:require [clojure.set]
+            [boot-fmt.impl :as impl]
             [boot.core :as bc]
             [boot.util :as bu]))
 
@@ -37,8 +38,11 @@ Specify the operation using the --mode paramter:
   [m mode MODE kw "Mode of operation, i.e. print, list, diff or overwrite. Defaults to print"
    r really bool "In overwrite mode, files are overwritten only if the --really flag is set as well"
    f files VAL #{str} "The list of files or directories to format"
+   s source bool "Automatically scan for source file in boot source directories"
    o options OPTS edn "zprint options"]
-  (let [mode (or mode :print)]
+  (let [mode (or mode :print)
+        files (cond-> files
+                source (clojure.set/union (bc/get-env :source-paths) (bc/get-env :resource-paths)))]
     (assert (seq files) "At least one filename needs to be provided.")
     (assert (#{:print :list :diff :overwrite} mode) "Invalid mode")
     (assert (or (not= :overwrite mode) really)
