@@ -1,11 +1,11 @@
 (ns boot-fmt.core
-  "Reformat Clojure(script) source files"
-  {:boot/export-tasks true}
-  (:require [clojure.set]
-            [clojure.string]
-            [clojure.java.shell]
-            [boot.core :as bc]
-            [boot.util :as bu]))
+ "Reformat Clojure(script) source files"
+ {:boot/export-tasks true}
+ (:require [clojure.set]
+           [clojure.string]
+           [clojure.java.shell]
+           [boot.core :as bc]
+           [boot.util :as bu]))
 
 (def pod-deps '[[zprint "0.2.10"] [com.google.guava/guava "18.0"]])
 

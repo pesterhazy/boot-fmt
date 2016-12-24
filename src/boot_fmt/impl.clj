@@ -1,10 +1,10 @@
 (ns boot-fmt.impl
-  (:require [zprint.core :as zp]
-            [zprint.config :as zc]
-            [zprint.zprint :as zprint]
-            [zprint.zutil :as zutil]
-            [rewrite-clj.parser :as p])
-  (:import [com.google.common.io Files]))
+ (:require [zprint.core :as zp]
+           [zprint.config :as zc]
+           [zprint.zprint :as zprint]
+           [zprint.zutil :as zutil]
+           [rewrite-clj.parser :as p])
+ (:import [com.google.common.io Files]))
 
 (defn zprint-whole
   [wholefile file-name]
@@ -52,8 +52,7 @@
                                       (.getAbsolutePath new-f))
                :out
                println))
-         (finally (doseq [file (.listFiles tempdir)]
-                    (.delete file))
+         (finally (doseq [file (.listFiles tempdir)] (.delete file))
                   (.delete tempdir)))))
 
 (defn example
@@ -96,8 +95,7 @@
   [{:keys [zprint-options], :as opts} files]
   (zprint.core/set-options! zprint-options)
   (when-not (seq files) (throw (RuntimeException. "No files found")))
-  (doseq [file files]
-    (process file opts)))
+  (doseq [file files] (process file opts)))
 
 (defn process-many-file-names
   [opts file-names]
