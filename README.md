@@ -156,6 +156,10 @@ boot fmt -f src --options '{:style :community, :fn-map {":require" :force-nl-bod
 
 ## Changes
 
+### 0.1.4
+
+- Update to zprint 0.2.10
+
 ### 0.1.3
 
 - Isolate dependencies in pods
