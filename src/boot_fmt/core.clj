@@ -13,8 +13,9 @@
   []
   (let [{:keys [exit out err]} (clojure.java.shell/sh "git"
                                                       "ls-files" "-z"
-                                                      "*.clj" "*.cljs"
-                                                      "*.cljc" "*.cljs.hl"
+                                                      "*.clj" "*.cljs" "*.cljc"
+                                                      "*.cljx"
+                                                      "*.cljs.hl"
                                                       "*.boot")]
     (when (not= exit 0) (throw (ex-info "git ls-files failed" {:err err})))
     (-> out
@@ -80,9 +81,7 @@ Specify the operation using the --mode parameter:
                                              (.isFile f)
                                              (not (.isHidden f))
                                              (->> (.. f getName toLowerCase)
-                                                  (partial
-                                                    re-find
-                                                    #"\.(clj|cljs|cljc|cljx|cljs\.hl|boot)$")))))
+                                                  (re-find #"\.(clj|cljs|cljc|cljx|cljs\.hl|boot)$")))))
                               (map #(.getPath %))
                               set
                               sort)]
