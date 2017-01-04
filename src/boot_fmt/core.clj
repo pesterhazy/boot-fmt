@@ -14,7 +14,8 @@
   (let [{:keys [exit out err]} (clojure.java.shell/sh "git"
                                                       "ls-files" "-z"
                                                       "*.clj" "*.cljs"
-                                                      "*.cljc" "*.boot")]
+                                                      "*.cljc" "*.cljs.hl"
+                                                      "*.boot")]
     (when (not= exit 0) (throw (ex-info "git ls-files failed" {:err err})))
     (-> out
         (clojure.string/split #"\000")
@@ -78,8 +79,10 @@ Specify the operation using the --mode parameter:
                                         (and (.exists f)
                                              (.isFile f)
                                              (not (.isHidden f))
-                                             (contains? #{"clj" "cljs" "cljc" "cljx" "boot"}
-                                                        (last (.split (.toLowerCase (.getName f)) "\\."))))))
+                                             (->> (.. f getName toLowerCase)
+                                                  (partial
+                                                    re-find
+                                                    #"\.(clj|cljs|cljc|cljx|cljs\.hl|boot)$")))))
                               (map #(.getPath %))
                               set
                               sort)]
