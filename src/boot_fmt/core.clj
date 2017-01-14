@@ -1,22 +1,21 @@
 (ns boot-fmt.core
- "Reformat Clojure(script) source files"
- {:boot/export-tasks true}
- (:require [clojure.set]
-           [clojure.string]
-           [clojure.java.shell]
-           [boot.core :as bc]
-           [boot.util :as bu]))
+  "Reformat Clojure(script) source files"
+  {:boot/export-tasks true}
+  (:require [clojure.set]
+            [clojure.string]
+            [clojure.java.shell]
+            [boot.core :as bc]
+            [boot.util :as bu]))
 
-(def pod-deps '[[zprint "0.2.10"] [com.google.guava/guava "18.0"]])
+(def pod-deps '[[zprint "0.2.12"] [com.google.guava/guava "18.0"]])
 
 (defn find-files-git
   []
   (let [{:keys [exit out err]} (clojure.java.shell/sh "git"
                                                       "ls-files" "-z"
-                                                      "*.clj" "*.cljs" "*.cljc"
-                                                      "*.cljx"
-                                                      "*.cljs.hl"
-                                                      "*.boot")]
+                                                      "*.clj" "*.cljs"
+                                                      "*.cljc" "*.cljx"
+                                                      "*.cljs.hl" "*.boot")]
     (when (not= exit 0) (throw (ex-info "git ls-files failed" {:err err})))
     (-> out
         (clojure.string/split #"\000")

@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+cd "$PRO"
+
+boot bump
+boot release

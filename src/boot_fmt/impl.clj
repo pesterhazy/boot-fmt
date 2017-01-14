@@ -1,10 +1,10 @@
 (ns boot-fmt.impl
- (:require [zprint.core :as zp]
-           [zprint.config :as zc]
-           [zprint.zprint :as zprint]
-           [zprint.zutil :as zutil]
-           [rewrite-clj.parser :as p])
- (:import [com.google.common.io Files]))
+  (:require [zprint.core :as zp]
+            [zprint.config :as zc]
+            [zprint.zprint :as zprint]
+            [zprint.zutil :as zutil]
+            [rewrite-clj.parser :as p])
+  (:import [com.google.common.io Files]))
 
 (defn zprint-whole
   [wholefile file-name]
