@@ -147,8 +147,28 @@ Options:
 
 ## Configuration
 
-You can supply a map of [zprint options](https://github.com/kkinnear/zprint#overview)
-using the `--options` parameter:
+The output of zprint (and of boot-fmt) can be customized extensively.
+
+For example, the default behavior is to indent the first argument of function calls with double-space indentation:
+
+```diff
+ (org.springframework.context.support.ClassPathXmlApplicationContext.
+- "supercalifragilisticexpialidocious")
++  "supercalifragilisticexpialidocious")
+```
+
+The Clojure
+[Community Style Guide](https://github.com/bbatsov/clojure-style-guide) and
+EMACS's clojure-mode prefer single-space indentation in
+[such contexts](https://github.com/EnterpriseQualityCoding/FizzBuzzEnterpriseEdition)
+. If you prefer this _community_ style over zprint's defaults, use the
+`--options {:style :community}` command line switch. See
+[this list](https://github.com/kkinnear/zprint/blob/b39a8e3e7bc350c4a3e2861aef9b1d9846514634/src/zprint/config.cljc#L509)
+for other ways in which community style differs from the default style.
+
+Using the `--options` switch you can also fine-tune indentation rules,
+including those for custom macros, by setting
+[zprint options](https://github.com/kkinnear/zprint#overview), for example:
 
 ```
 boot fmt -f src --options '{:style :community, :fn-map {":require" :force-nl-body, "ns" :arg1-body}}'
