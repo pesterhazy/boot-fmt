@@ -159,7 +159,7 @@ For example, the default behavior is to indent the first argument of function ca
 
 The Clojure
 [Community Style Guide](https://github.com/bbatsov/clojure-style-guide) and
-EMACS's clojure-mode prefer single-space indentation in
+Emacs's clojure-mode prefer single-space indentation in
 [such contexts](https://github.com/EnterpriseQualityCoding/FizzBuzzEnterpriseEdition)
 . If you prefer this _community_ style over zprint's defaults, use the
 `--options {:style :community}` command line switch. See
