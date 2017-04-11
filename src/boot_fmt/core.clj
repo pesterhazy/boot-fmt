@@ -7,7 +7,9 @@
             [boot.core :as bc]
             [boot.util :as bu]))
 
-(def pod-deps '[[zprint "0.2.12"] [com.google.guava/guava "18.0"]])
+(def pod-deps
+  '[[zprint "0.3.1"] [clojure-future-spec "1.9.0-alpha15"]
+    [com.google.guava/guava "18.0"]])
 
 (defn find-files-git
   []

@@ -3,6 +3,8 @@
             [zprint.config :as zc]
             [zprint.zprint :as zprint]
             [zprint.zutil :as zutil]
+            [clojure.string]
+            [clojure.java.shell]
             [rewrite-clj.parser :as p])
   (:import [com.google.common.io Files]))
 
