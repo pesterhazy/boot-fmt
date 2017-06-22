@@ -20,7 +20,7 @@ boot-fmt aims to provide a friendly command-line interface.
 With [boot](https://github.com/boot-clj/boot) installed, you can use boot-fmt from any directory:
 
 ```bash
-boot -d boot-fmt/boot-fmt fmt -f src
+boot -d boot-fmt fmt -f src
 ```
 
 Note that you do *not* need to use `boot` as your build tool or even have a
