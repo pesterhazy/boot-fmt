@@ -99,7 +99,7 @@ See the next section for a full description of each mode of operation.
 You can see the options available on the command line:
 
 ```bash
-boot -d boot-fmt/boot-fmt fmt --help
+boot -d boot-fmt fmt --help
 ```
 
 Here's the output:
