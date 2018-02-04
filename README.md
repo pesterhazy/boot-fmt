@@ -176,6 +176,10 @@ boot fmt -f src --options '{:style :community, :fn-map {":require" :force-nl-bod
 
 ## Changes
 
+### 0.1.8
+
+- Update to zprint 0.4.8
+
 ### 0.1.6
 
 - Update to zprint 0.3.1
