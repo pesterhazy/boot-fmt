@@ -8,27 +8,7 @@
             [rewrite-clj.parser :as p])
   (:import [com.google.common.io Files]))
 
-(defn zprint-whole
-  [wholefile file-name]
-  ;; FIXME
-  ;; Copy 'n paste job from zprint.core
-  (let [lines (clojure.string/split wholefile #"\n")
-        lines (if (:expand? (:tab (zc/get-options)))
-                (map (partial zprint/expand-tabs
-                              (:size (:tab (zc/get-options))))
-                     lines)
-                lines)
-        filestring (clojure.string/join "\n" lines)
-        filestring
-        (if (= (last wholefile) \newline) (str filestring "\n") filestring)
-        forms (zutil/edn* (p/parse-string-all filestring))]
-    (zprint.core/process-multiple-forms {:process-bang-zprint? true}
-                                        zprint.core/zprint-str-internal
-                                        (str "file: " file-name)
-                                        forms)))
-
-
-(defn transform [contents file-name] (zprint-whole contents file-name))
+(defn transform [contents file-name] (zp/zprint-file-str contents file-name))
 
 (defn mangle
   [file-name nam]
