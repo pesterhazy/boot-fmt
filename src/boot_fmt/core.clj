@@ -23,6 +23,15 @@
         (clojure.string/split #"\000")
         set)))
 
+(defn find-files-git-cached
+  []
+  (let [{:keys [exit out err]} (clojure.java.shell/sh "git" "diff"
+                                                      "--cached" "--name-only")]
+    (when (not= exit 0) (throw (ex-info "git diff --cached failed" {:err err})))
+    (->> (clojure.string/split out #"\n")
+         (filter #(re-matches #".*\.(clj|cljs|cljc|cljx|cljs\.hl|boot)$" %))
+         set)))
+
 (defn find-files-source
   []
   (clojure.set/union (bc/get-env :source-paths) (bc/get-env :resource-paths)))
@@ -61,11 +70,13 @@ Specify the operation using the --mode parameter:
    f files VAL #{str} "The list of files or directories to format"
    s source bool "Automatically scan for files in boot source-paths and resource-paths"
    g git bool "Automatically scan for files in current git repository"
+   c cached bool "Automatically scan for cached files in current git repository"
    o options OPTS edn "zprint options"]
   (let [mode (or mode :print)
         files (cond-> files
                 source (clojure.set/union (find-files-source))
-                git (clojure.set/union (find-files-git)))]
+                git (clojure.set/union (find-files-git))
+                cached (clojure.set/union (find-files-git-cached)))]
     (assert (seq files) "At least one filename needs to be provided.")
     (assert (#{:print :list :diff :overwrite} mode) "Invalid mode")
     (assert (or (not= :overwrite mode) really)
