@@ -8,8 +8,8 @@
             [boot.util :as bu]))
 
 (def pod-deps
-  '[[zprint "0.4.6"] [clojure-future-spec "1.9.0-alpha17"]
-    [com.google.guava/guava "18.0"]])
+  '[[zprint "0.4.10"] [rewrite-clj "0.6.1"] [org.clojure/clojure "1.9.0"]
+    [com.google.guava/guava "26.0-jre"]])
 
 (defn find-files-git
   []
